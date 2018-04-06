@@ -8,7 +8,7 @@ The SEC maintains EDGAR weblogs.  This sessionizer takes the data and produces a
 
 To summarize, this sessionizer takes existing publicly available EDGAR weblogs and parses them into sessions, each of which contains one user, the duration of and number of documents requested during that visit, and then writes the output to a file.  This back-end program creates a data pipeline that organizes and hands off user information to the front-end developers, who could create a GUI (Graphic User Interface) that is user-friendly for your company’s leadership or for the public.
 
-### How to scale this sessionizer for big data 
+## How to scale this sessionizer for big data 
 
 As I wrote the code, I processed the information and deleted it out of memory as soon as possible, so as not to create big, unwieldy database with superfluous information.  
 
