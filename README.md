@@ -35,6 +35,8 @@ David Code
 ## Acknowledgments
 
 Special thanks to my mentor, Carson Elmore Jr.
+
 Sharad Murthy also helped me to understand sharding and buckets
+
 The good folks of Stack Overflow
 
