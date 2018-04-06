@@ -1,4 +1,4 @@
-A Simple, Basic Sessionizer for Web Usage Mining
+#A Simple, Basic Sessionizer for Web Usage Mining
 
 Table of Contents
 
