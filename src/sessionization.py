@@ -56,7 +56,7 @@ def IsValid(request_line):
 #Let's start by clearing out "Sessionization.txt"
 with open(output_file_name, "w") as output_file:
 	print ("Erasing a new output file " + output_file_name) 
-#this is main loop of the program, which produces a data stream that we parse
+#This is main loop of the program, which produces a data stream that we parse
 with open(log_file_name) as log_file:
 	for line in log_file:
 		request=line.split(',')
@@ -70,23 +70,21 @@ with open(log_file_name) as log_file:
 		
 		run_cleanup(request_datetime)
 
-		update=False
-		#this loop determines whether or not user is still active
+		update=False #We are assuming, at the start of this loop, that this line of the file (request) will be a new user, unless the loop proves us wrong.
 		for i in range(len(active_users)):
 			if active_users[i][0] == user_ip:
 				update=True
-				break
+				break #This is for efficiency, since we found the active user and there is only ever one, so no need to continue.
 		if update==True:
 			#print("Update")
-			#update
 			active_users[i][2]=request_datetime
 			active_users[i][3]+=1
 		else:
 			#print("add")
-			#add
 			active_users.append([user_ip,request_datetime,request_datetime,1])
 			#each new user starts out with 1 request, hence the 1 above
 
 	#Write anynew output
 run_cleanup(datetime.datetime.now())
+print ("Your new output file is at " + output_file_name)
 
