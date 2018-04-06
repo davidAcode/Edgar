@@ -10,16 +10,17 @@ with open(inactivity_file_name) as inactivity_file:
 		#print(line)
 		inactivity = int(line)
 #The "int" above turns the variable "line" into an integer, if it isn't already
-#Now I create an array, "active_users" into which I read my 4 parameters
+#Now I create an array, "active_users" into which I write my 4 parameters for each active user
 active_users = []
-	#[IP, first datetime, last datetime, count] 
-expired_users = []
-	#[IP, first date & time, last date & time, duration, count]
+	#Each row will be a list:[IP, first datetime, last datetime, count] 
+#We calculate duration by subtracting the first date time from the last date time, and adding 1 (because it's inclusive)
+expired_users = [] 
+	#Each row will be a list:[IP, first date & time, last date & time, duration, count]
 output_file_name = sys.argv[3]
 log_file_name = sys.argv[1]
 
-#this function apppends each expired user to the output file as we get them
 def write_out():
+	"""This function apppends each expired user to the output file as we get them"""
 	global expired_users	
 	with open(output_file_name, "a") as output_file:
 		for user in expired_users:
@@ -28,23 +29,23 @@ def write_out():
 	expired_users=[]
 
 def run_cleanup(current_time):
-	#Run cleanup on active_users now
+	"""Run cleanup on active_users"""
 	global active_users
 	#print("Active Users" + str(len(active_users)))
-	to_be_deleted = []
+	to_be_deleted = [] #Allows us to remove expired users from the active user list without breaking the loop
 	for i in range(len(active_users)):
 		delta = current_time - active_users[i][2]
 		#print(delta.total_seconds()>inactivity)
 		if delta.total_seconds() > inactivity:
 			session_duration = active_users[i][2] - active_users[i][1]
 			expired_users.append([active_users[i][0],active_users[i][1],active_users[i][2],int(session_duration.total_seconds())+1,active_users[i][3]])
-			to_be_deleted.insert(0,i)
+			to_be_deleted.insert(0,i) #I inserted this because at first, the deletion of expired users was breaking the loop. This line allowed me to delete them afterward, separately, without breaking the loop, and I chose to insert this instead of reversing the loop.  This would need to be tested when scaling up to larger sizes.
 	for j in to_be_deleted:
 		del active_users[j]
 	#print("Expired Users AFter Cleanup" + str(len(expired_users)))
 	write_out()
 
-#this function just checks to see if the request line is valid (a way of skipping the header line)
+"""This function just checks to see if the request line is valid (a way of skipping the header line).  Currently I'm just checking to see if time zone can be cast as a float, but the function would have to be improved to test all of the items in the row for security purposes, if this program went into production."""
 def IsValid(request_line):
 	try:
 		float(request_line[3])
@@ -52,6 +53,9 @@ def IsValid(request_line):
 	except ValueError:
 		return False
 
+#Let's start by clearing out "Sessionization.txt"
+with open(output_file_name, "w") as output_file:
+	print ("Erasing a new output file " + output_file_name) 
 #this is main loop of the program, which produces a data stream that we parse
 with open(log_file_name) as log_file:
 	for line in log_file:
